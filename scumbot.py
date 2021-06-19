@@ -7,11 +7,12 @@ import loginparse
 from discord.ext import commands, tasks
 import configparser
 import datetime as dt
-# Add admin channel
+# Add admin channel, mine channel
 
 
 client = commands.Bot(command_prefix='!')
 config = configparser.ConfigParser()
+config.read('config.ini')
 last_chat_dt = 0
 last_kill_dt = 0
 last_login_dt = 0
@@ -19,7 +20,6 @@ chat_channel = int(config['DISCORD']['chat_channel'])
 kill_channel = int(config['DISCORD']['kill_channel'])
 login_channel = int(config['DISCORD']['login_channel'])
 login_channel = 0
-config.read('config.ini')
 TOKEN = config['DISCORD']['token']
 DELAY = config['DISCORD']['delay']
 DELAY = int(DELAY)
@@ -38,7 +38,8 @@ async def post_chat_events(chat_events):
     global chat_channel
     channel = chat_channel
     for chat_event in chat_events:
-        await client.get_channel(channel).send(f"{chat_event['user']}: {chat_event['message']}")
+        out = "```fix\n" + str(chat_event['date'].strftime("%Y-%m-%d %H:%M")) + " from " + chat_event['user'] + "```\n" + chat_event['message']
+        await client.get_channel(channel).send(out)
 
 
 async def post_kill_events(kill_events):
